@@ -1,0 +1,82 @@
+//file:noinspection GroovyAssignabilityCheck
+//file:noinspection GrUnresolvedAccess
+buildscript {
+    repositories {
+        maven { url = 'https://maven.minecraftforge.net' }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "net.minecraftforge.gradle:ForgeGradle:5.1.+"
+    }
+}
+
+apply plugin: "net.minecraftforge.gradle"
+
+ext {
+    bteUtilVersionMajor = "2.2"
+    bteUtilVersion = "$bteUtilVersionMajor." + ('git rev-list --count HEAD'.execute().text.trim())
+
+    mcpMappingsVersion = "39-1.12"
+    forgeVersion = "14.23.5.2860"
+    minecraftVersion = "1.12.2"
+
+    gsonVersion = "2.8.9"
+    junixSocketVersion = "2.4.0"
+    lombokVersion = "1.18.22"
+}
+
+version = "$bteUtilVersion"
+group = "net.buildtheearth"
+
+repositories {
+    mavenCentral()
+}
+
+configurations {
+    shade
+    implementation.extendsFrom(shade)
+}
+
+dependencies {
+    minecraft "net.minecraftforge:forge:$minecraftVersion-$forgeVersion"
+    implementation "com.google.code.gson:gson:$gsonVersion"
+    shade "com.kohlschutter.junixsocket:junixsocket-common:$junixSocketVersion"
+    shade "com.kohlschutter.junixsocket:junixsocket-native-common:$junixSocketVersion"
+
+    compileOnly "org.projectlombok:lombok:$lombokVersion"
+    annotationProcessor "org.projectlombok:lombok:$lombokVersion"
+}
+
+minecraft {
+    mappings channel: 'stable', version: "$mcpMappingsVersion"
+    runs {
+        client {
+            workingDirectory project.file('run')
+            property 'forge.logging.markers', 'REGISTRIES'
+            property 'forge.logging.console.level', 'debug'
+        }
+    }
+}
+
+
+processResources {
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+    inputs.property "version", project.version
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+        expand 'version':project.version
+    }
+
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+jar {
+    duplicatesStrategy DuplicatesStrategy.INCLUDE
+    from {
+        configurations.shade.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }.unique()
+    }
+}

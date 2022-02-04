@@ -29,7 +29,6 @@ import net.buildtheearth.bteutilities.gui.GuiHandler;
 import net.buildtheearth.bteutilities.gui.util.IconLoader;
 import net.buildtheearth.bteutilities.network.BTENetworkHandler;
 import net.minecraft.client.Minecraft;
-import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.event.FMLInitializationEvent;
@@ -66,10 +65,6 @@ public class BTEUtilities {
 
     @Getter
     private String majorVersion;
-
-    public static void bindTransparent() {
-        Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("bteutilities:gui/transparent.png"));
-    }
 
     @Mod.EventHandler
     public void preInit(FMLPreInitializationEvent event) {

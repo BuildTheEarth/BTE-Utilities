@@ -23,8 +23,10 @@ package net.buildtheearth.bteutilities.gui.textures;
 import lombok.Getter;
 import lombok.Setter;
 import net.buildtheearth.bteutilities.BTEUtilities;
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.GlStateManager;
 import net.minecraft.client.renderer.texture.TextureUtil;
+import net.minecraft.util.ResourceLocation;
 import org.apache.logging.log4j.Level;
 import org.lwjgl.opengl.GL11;
 
@@ -63,7 +65,7 @@ public class TextureURL implements ITexture {
                 bind();
                 return;
             }
-            BTEUtilities.bindTransparent();
+            Minecraft.getMinecraft().renderEngine.bindTexture(new ResourceLocation("bteutilities:gui/transparent.png"));
         }
     }
 

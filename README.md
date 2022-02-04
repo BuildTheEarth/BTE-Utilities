@@ -6,16 +6,21 @@
 </p>
 
 ## Features
+
 * Custom Main Menu
 * Discord Prescense Integration
 
 ### Roadmap
+
 * Discord Game API - Join minigames from discord status
 
 ## Licensing
-BTE-Utilities is distributed under the MIT License. Read [LICENSE](https://github.com/BuildTheEarth/BTE-Utilities/blob/master/LICENSE) for more information.
+
+BTE-Utilities is distributed under the MIT License.
+Read [LICENSE](https://github.com/BuildTheEarth/BTE-Utilities/blob/master/LICENSE) for more information.
 
 ## Building
+
 * Clone this repo, or download as a zip
 * Open `BTE-Utilities` in your preferred IDE
     - IntelliJ with the Minecraft Development plugin will provide the best experience for Forge.
@@ -23,6 +28,7 @@ BTE-Utilities is distributed under the MIT License. Read [LICENSE](https://githu
 * The final jar will be found under `/build/libs`
 
 ## Libraries
+
 * [CustomMainMenu](https://www.curseforge.com/minecraft/mc-mods/custom-main-menu) - Portions of rendering code is used.
 * [DiscordIPC](https://github.com/jagrosh/DiscordIPC)
 * [JUnixSocket](https://github.com/kohlschutter/junixsocket)

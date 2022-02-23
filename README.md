@@ -1,6 +1,7 @@
 <h1 align="Center">BTE-Utilities</h1>
 <p align="Center">A set of utilities and tweaks for the BTE Modpack</p>
 <p align="center">
+    <img src="https://go.buildtheearth.net/official-shield">
     <a href="https://github.com/BuildTheEarth/BTE-Utilities/actions/workflows/gradle.yml/"><img src="https://github.com/BuildTheEarth/BTE-Utilities/actions/workflows/gradle.yml/badge.svg"></a>
     <a href="https://discord.com/invite/BGpmp3sfH5"><img src="https://img.shields.io/discord/706317564904472627?label=discord"></a>
 </p>

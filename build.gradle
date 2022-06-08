@@ -21,7 +21,7 @@ ext {
     minecraftVersion = "1.12.2"
 
     gsonVersion = "2.9.0"
-    junixSocketVersion = "2.4.0"
+    junixSocketVersion = "2.5.0"
     lombokVersion = "1.18.22"
 }
 

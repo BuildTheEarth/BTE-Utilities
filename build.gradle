@@ -20,7 +20,7 @@ ext {
     forgeVersion = "14.23.5.2860"
     minecraftVersion = "1.12.2"
 
-    gsonVersion = "2.9.0"
+    gsonVersion = "2.9.1"
     junixSocketVersion = "2.4.0"
     lombokVersion = "1.18.22"
 }

@@ -32,25 +32,35 @@ import org.lwjgl.opengl.GL11;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.MalformedURLException;
 import java.net.URL;
 
 public class TextureURL implements ITexture {
     @Getter
     private URL url;
+    @Getter
+    private boolean isURl = true;
+    @Getter
+    private InputStream bf;
     @Setter
     private int textureID;
     @Setter
     private BufferedImage bi;
 
-    public TextureURL(String url) {
+    public TextureURL(String url)  {
         this.textureID = -1;
         try {
             this.url = new URL(url);
         } catch (MalformedURLException e) {
+            isURl = false;
+            this.bf = getClass().getClassLoader()
+                    .getResourceAsStream("assets/" + url.replace(":", "/") );
             BTEUtilities.getLogger().log(Level.ERROR, "Invalid URL: " + url);
-            e.printStackTrace();
         }
         new LoadTextureURL(this).start();
     }
@@ -81,7 +91,12 @@ public class TextureURL implements ITexture {
         public void run() {
             BufferedImage bi = null;
             try {
-                bi = ImageIO.read(texture.getUrl());
+                if (texture.isURl) {
+                    bi = ImageIO.read(texture.getUrl());
+                } else {
+                    bi = ImageIO.read(texture.getBf());
+                }
+
             } catch (IOException ignored) {
             }
 

@@ -22,8 +22,10 @@ package net.buildtheearth.bteutilities;
 
 import com.google.gson.JsonObject;
 import lombok.Getter;
+import net.minecraft.util.ResourceLocation;
 
 import javax.imageio.ImageIO;
+import javax.net.ssl.HttpsURLConnection;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
@@ -64,10 +66,12 @@ public class ModpackAPI implements Runnable {
             dyn = BTEUtilities.parser.parse(new FileReader(new File(BTEUtilities.getInstance().dynamicImageFolder, "dynamic.json"))).getAsJsonObject();
         } catch (FileNotFoundException e) {
         }
+
         for (int i = 0; i < 5; i++) {
             boolean dynamic = new File(BTEUtilities.getInstance().dynamicImageFolder, "background" + (i + 1) + ".png").exists();
             File image = new File(dynamic ? BTEUtilities.getInstance().dynamicImageFolder : BTEUtilities.getInstance().defaultImageFolder, "background" + (i + 1) + ".png");
             JsonObject data = dynamic ? dyn : def;
+            System.out.println(data);
             String credit = "No Credit Provided";
             if (data.has(String.valueOf(i + 1))) {
                 credit = data.get(String.valueOf(i + 1)).getAsJsonObject().get("credit").getAsString();
@@ -130,7 +134,8 @@ public class ModpackAPI implements Runnable {
             }
 
             String url = result.get("url").getAsString();
-            String credit = result.get("credit").getAsString();
+            String credit = null;
+            if (s != "logo") credit = result.get("credit").getAsString();
             JsonObject localQuery = dynamicData.getAsJsonObject(query);
 
             if (localQuery != null && localQuery.get("url").getAsString().equalsIgnoreCase(url)) {
@@ -141,8 +146,15 @@ public class ModpackAPI implements Runnable {
             BufferedImage image;
             try {
                 URL imageURL = new URL(url);
-                image = ImageIO.read(imageURL);
+                HttpURLConnection con = (HttpURLConnection) imageURL.openConnection();
+                con.setRequestMethod("GET");
+                con.setRequestProperty("Content-Type", "application/json");
+                con.setRequestProperty("User-Agent", "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.11 (KHTML, like Gecko) Chrome/23.0.1271.95 Safari/537.11");
+                image = ImageIO.read(con.getInputStream());
             } catch (IOException e) {
+                System.out.println("Failed to load image from " + url);
+                System.out.println(e.getMessage());
+                e.printStackTrace();
                 BTEUtilities.getLogger().error("Failed to download image: " + query);
                 continue;
             }
@@ -173,10 +185,12 @@ public class ModpackAPI implements Runnable {
 
         try {
             FileWriter dynamicWriter = new FileWriter(dynamic);
+            System.out.println(BTEUtilities.gson.toJson(dynamicData));
             dynamicWriter.write(BTEUtilities.gson.toJson(dynamicData));
             dynamicWriter.flush();
             dynamicWriter.close();
         } catch (IOException e) {
+            BTEUtilities.getLogger().error("Failed to save json: " + dynamic);
             e.printStackTrace();
         }
         load();
@@ -197,6 +211,8 @@ public class ModpackAPI implements Runnable {
                 content.append(inputLine);
             }
             in.close();
+
+            System.out.println(content.toString());
             return BTEUtilities.parser.parse(content.toString()).getAsJsonObject();
         } catch (IOException e) {
             e.printStackTrace();

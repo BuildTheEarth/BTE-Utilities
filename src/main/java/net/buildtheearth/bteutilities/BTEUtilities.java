@@ -40,7 +40,14 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.SSLContext;
 import java.io.File;
+import java.security.GeneralSecurityException;
+import java.security.NoSuchAlgorithmException;
+import java.security.cert.X509Certificate;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -73,6 +80,33 @@ public class BTEUtilities {
         String[] splitVersion = event.getModMetadata().version.split("\\.");
         majorVersion = splitVersion[0] + "." + splitVersion[1];
 
+        //Hippity hoppity I no longer care about cert verification
+
+        TrustManager[] trustAllCerts = new TrustManager[] {
+                new X509TrustManager() {
+                    public java.security.cert.X509Certificate[] getAcceptedIssuers() {
+                        return new X509Certificate[0];
+                    }
+                    public void checkClientTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                    public void checkServerTrusted(
+                            java.security.cert.X509Certificate[] certs, String authType) {
+                    }
+                }
+        };
+
+        // Enjoy not verifying SSL certs anymore
+        try {
+            SSLContext sc = SSLContext.getInstance("SSL");
+            sc.init(null, trustAllCerts, new java.security.SecureRandom());
+            HttpsURLConnection.setDefaultSSLSocketFactory(sc.getSocketFactory());
+        } catch (GeneralSecurityException e) {
+            System.out.println(e.getMessage());
+            e.printStackTrace();
+        }
+
+
         defaultImageFolder = new File(new File(Minecraft.getMinecraft().gameDir, "buildtheearth"), "default");
         dynamicImageFolder = new File(new File(Minecraft.getMinecraft().gameDir, "buildtheearth"), "dynamic");
         defaultImageFolder.mkdir();
@@ -90,6 +124,9 @@ public class BTEUtilities {
 
     @Mod.EventHandler
     public void postInit(FMLPostInitializationEvent event) {
+
+        //Now the modpack should be able to load everything fine
+        new ModpackAPI().run();
         ModpackAPI.load();
         Executors.newSingleThreadScheduledExecutor().scheduleAtFixedRate(new ModpackAPI(), 0, 10, TimeUnit.MINUTES);
         BTENetworkHandler.registerHandlers();

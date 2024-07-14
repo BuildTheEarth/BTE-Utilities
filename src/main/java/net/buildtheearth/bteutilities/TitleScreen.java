@@ -60,6 +60,7 @@ public final class TitleScreen extends CustomGui {
         for (int i = 0; i < modpackPictures.length; i++) {
             ModpackPicture picture = modpackPictures[i];
             backgrounds[i] = picture.getImage();
+            //Sometimes credit shows up, weird bug
             credits[i] = picture.getCredit();
         }
         Image title = new Image(-137, 40, 512, 512, Alignment.top_center);

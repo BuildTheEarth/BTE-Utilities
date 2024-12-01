@@ -22,7 +22,7 @@ ext {
 
     gsonVersion = "2.9.0"
     junixSocketVersion = "2.4.0"
-    lombokVersion = "1.18.22"
+    lombokVersion = "1.18.26"
 }
 
 version = "$bteUtilVersion"
